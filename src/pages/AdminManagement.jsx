@@ -89,7 +89,7 @@ export default function AdminManagement() {
     },
   ];
 
-  // Update courses and Local Storage
+  // Update courses and LocalStorage
   const updateCourses = (updatedCourses) => {
     setCourses(updatedCourses);
     localStorage.setItem("courses", JSON.stringify(updatedCourses));
@@ -110,7 +110,7 @@ export default function AdminManagement() {
     }));
   };
 
-  // Update quiz question text
+  // Update quiz question
   const handleQuestionChange = (questionIndex, value) => {
     setFormData((previous) => {
       const updatedQuestions = [...previous.quizQuestions];
@@ -131,7 +131,6 @@ export default function AdminManagement() {
   const handleOptionChange = (questionIndex, optionIndex, value) => {
     setFormData((previous) => {
       const updatedQuestions = [...previous.quizQuestions];
-
       const updatedOptions = [...updatedQuestions[questionIndex].options];
 
       updatedOptions[optionIndex] = value;
@@ -440,7 +439,7 @@ export default function AdminManagement() {
         </p>
       </div>
 
-      {/* Course List */}
+      {/* Course List Table */}
       {courses.length === 0 ? (
         <div className="bg-white border border-gray-200 rounded-xl p-10 text-center shadow-sm">
           <BookOpen size={40} className="text-gray-400 mx-auto mb-3" />
@@ -461,80 +460,142 @@ export default function AdminManagement() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition"
-            >
-              {/* Course Image */}
-              <div className="h-40 bg-gray-100 overflow-hidden">
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              </div>
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1100px] text-left">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  {[
+                    "Course",
+                    "Instructor",
+                    "Category",
+                    "Level",
+                    "Lessons",
+                    "Rating",
+                    "Duration",
+                    "Quiz",
+                    "Actions",
+                  ].map((heading) => (
+                    <th
+                      key={heading}
+                      className={`px-5 py-4 text-xs font-semibold text-gray-500 uppercase ${
+                        heading === "Actions" ? "text-center" : ""
+                      }`}
+                    >
+                      {heading}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
 
-              {/* Course Information */}
-              <div className="p-5 flex flex-col flex-1">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="bg-violet-50 text-violet-700 px-2.5 py-1 rounded-lg text-xs font-medium">
-                    {course.category}
-                  </span>
-
-                  <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg text-xs">
-                    {course.level}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                  {course.title}
-                </h3>
-
-                <p className="text-gray-500 text-sm mb-2">
-                  Instructor: {course.instructor}
-                </p>
-
-                <p className="text-gray-500 text-sm mb-2">
-                  {course.lessonList?.length || course.lessons || 0} Lessons
-                  {" · "}
-                  {course.duration}
-                </p>
-
-                <p className="flex items-center gap-1 text-gray-500 text-sm mb-5">
-                  <Star size={15} className="text-yellow-500 fill-yellow-500" />
-                  {course.rating || "Not rated"}
-                </p>
-
-                <p className="text-gray-400 text-xs mb-4">
-                  {course.quizQuestions?.length || 0} custom quiz questions
-                </p>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 mt-auto">
-                  <button
-                    onClick={() => handleEdit(course)}
-                    className="flex-1 flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-2.5 rounded-lg text-sm transition"
+              <tbody className="divide-y divide-gray-100">
+                {courses.map((course) => (
+                  <tr
+                    key={course.id}
+                    className="hover:bg-violet-50/30 transition"
                   >
-                    <Pencil size={16} />
-                    Edit
-                  </button>
+                    {/* Course */}
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3 min-w-[210px]">
+                        <img
+                          src={course.image}
+                          alt={course.title}
+                          className="w-12 h-12 rounded-lg object-cover bg-gray-100 border border-gray-200"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
 
-                  <button
-                    onClick={() => setDeleteId(course.id)}
-                    className="flex-1 flex items-center justify-center gap-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white py-2.5 rounded-lg text-sm transition"
-                  >
-                    <Trash2 size={16} />
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">
+                            {course.title}
+                          </p>
+
+                          <p className="text-xs text-gray-400 mt-1">
+                            ID: {course.id}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Instructor */}
+                    <td className="px-5 py-4 text-sm text-gray-600">
+                      {course.instructor || "Not assigned"}
+                    </td>
+
+                    {/* Category */}
+                    <td className="px-5 py-4">
+                      <span className="inline-flex bg-violet-50 text-violet-700 px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap">
+                        {course.category}
+                      </span>
+                    </td>
+
+                    {/* Level */}
+                    <td className="px-5 py-4">
+                      <span className="inline-flex bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md text-xs whitespace-nowrap">
+                        {course.level}
+                      </span>
+                    </td>
+
+                    {/* Lessons */}
+                    <td className="px-5 py-4 text-sm text-gray-600">
+                      {course.lessonList?.length || course.lessons || 0}
+                    </td>
+
+                    {/* Rating */}
+                    <td className="px-5 py-4">
+                      <span className="flex items-center gap-1 text-sm text-gray-600">
+                        <Star
+                          size={14}
+                          className="text-yellow-500 fill-yellow-500"
+                        />
+                        {course.rating || "N/A"}
+                      </span>
+                    </td>
+
+                    {/* Duration */}
+                    <td className="px-5 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {course.duration || "N/A"}
+                    </td>
+
+                    {/* Quiz */}
+                    <td className="px-5 py-4 text-sm text-gray-600">
+                      {course.quizQuestions?.length || 0} / 5
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-5 py-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(course)}
+                          title="Edit Course"
+                          className="p-2 rounded-lg bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white transition"
+                        >
+                          <Pencil size={16} />
+                        </button>
+
+                        <button
+                          onClick={() => setDeleteId(course.id)}
+                          title="Delete Course"
+                          className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table Footer */}
+          <div className="px-5 py-3 border-t border-gray-200 bg-gray-50">
+            <p className="text-xs text-gray-500">
+              Showing {courses.length}{" "}
+              {courses.length === 1 ? "course" : "courses"}
+            </p>
+          </div>
         </div>
       )}
 
